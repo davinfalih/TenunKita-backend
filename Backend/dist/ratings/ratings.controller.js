@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RatingsController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const ratings_service_1 = require("./ratings.service");
 const jwt_guard_1 = require("../auth/jwt.guard");
 let RatingsController = class RatingsController {
@@ -32,6 +33,21 @@ exports.RatingsController = RatingsController;
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Buat rating/ulasan untuk produk yang sudah dibeli' }),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                productId: { type: 'number', example: 1 },
+                rating: { type: 'number', example: 5, minimum: 1, maximum: 5 },
+                comment: { type: 'string', example: 'Produk sangat bagus dan berkualitas!' },
+            },
+            required: ['productId', 'rating'],
+        },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Rating berhasil dibuat' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -40,12 +56,17 @@ __decorate([
 ], RatingsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('product/:productId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Lihat semua rating untuk suatu produk (publik)' }),
+    (0, swagger_1.ApiParam)({ name: 'productId', description: 'ID produk', example: 1 }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Daftar rating berhasil diambil' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Produk tidak ditemukan' }),
     __param(0, (0, common_1.Param)('productId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], RatingsController.prototype, "findByProduct", null);
 exports.RatingsController = RatingsController = __decorate([
+    (0, swagger_1.ApiTags)('ratings'),
     (0, common_1.Controller)('ratings'),
     __metadata("design:paramtypes", [ratings_service_1.RatingsService])
 ], RatingsController);

@@ -11,17 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCategoryDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateCategoryDto {
     name;
     description;
 }
 exports.CreateCategoryDto = CreateCategoryDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Kain Tenun', description: 'Nama kategori produk' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Nama kategori tidak boleh kosong' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateCategoryDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'Kategori untuk semua jenis kain tenun tradisional', description: 'Deskripsi kategori' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

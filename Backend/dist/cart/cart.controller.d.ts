@@ -5,15 +5,15 @@ export declare class CartController {
     constructor(cartService: CartService);
     addToCart(req: any, dto: AddToCartDto): Promise<{
         product: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
             price: number;
             stock: number;
-            imageUrl: string | null;
             categoryId: number;
+            imageUrl: string | null;
             averageRating: number;
             totalReviews: number;
         };
@@ -32,15 +32,15 @@ export declare class CartController {
                     name: string;
                 };
             } & {
+                description: string | null;
                 name: string;
                 createdAt: Date;
                 updatedAt: Date;
                 id: number;
-                description: string | null;
                 price: number;
                 stock: number;
-                imageUrl: string | null;
                 categoryId: number;
+                imageUrl: string | null;
                 averageRating: number;
                 totalReviews: number;
             };
@@ -56,15 +56,15 @@ export declare class CartController {
     }>;
     updateItem(req: any, itemId: string, dto: UpdateCartDto): Promise<{
         product: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
             price: number;
             stock: number;
-            imageUrl: string | null;
             categoryId: number;
+            imageUrl: string | null;
             averageRating: number;
             totalReviews: number;
         };

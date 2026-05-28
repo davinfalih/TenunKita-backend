@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const orders_service_1 = require("./orders.service");
 const update_order_status_dto_1 = require("./dto/update-order-status.dto");
 const jwt_guard_1 = require("../auth/jwt.guard");
@@ -41,6 +42,10 @@ exports.OrdersController = OrdersController;
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Post)('checkout'),
+    (0, swagger_1.ApiOperation)({ summary: 'Checkout - buat pesanan dari keranjang belanja' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Pesanan berhasil dibuat' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Keranjang kosong atau stok habis' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -49,6 +54,9 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Get)('my-orders'),
+    (0, swagger_1.ApiOperation)({ summary: 'Lihat semua pesanan milik user yang sedang login' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Daftar pesanan berhasil diambil' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -58,6 +66,9 @@ __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: '[ADMIN] Lihat semua pesanan' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Daftar semua pesanan' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'Akses ditolak - bukan admin' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -66,6 +77,11 @@ __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),
     (0, common_1.Patch)(':id/status'),
+    (0, swagger_1.ApiOperation)({ summary: '[ADMIN] Update status pesanan' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID pesanan', example: '1' }),
+    (0, swagger_1.ApiBody)({ type: update_order_status_dto_1.UpdateOrderStatusDto }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Status pesanan berhasil diupdate' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Pesanan tidak ditemukan' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -73,6 +89,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "updateStatus", null);
 exports.OrdersController = OrdersController = __decorate([
+    (0, swagger_1.ApiTags)('orders'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('orders'),
     __metadata("design:paramtypes", [orders_service_1.OrdersService])
 ], OrdersController);

@@ -8,20 +8,48 @@ import {
   Request,
   ParseIntPipe,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { RatingsService } from './ratings.service';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 
+@ApiTags('ratings')
 @Controller('ratings')
 export class RatingsController {
   constructor(private readonly ratingsService: RatingsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Buat rating/ulasan untuk produk yang sudah dibeli' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        productId: { type: 'number', example: 1 },
+        rating: { type: 'number', example: 5, minimum: 1, maximum: 5 },
+        comment: { type: 'string', example: 'Produk sangat bagus dan berkualitas!' },
+      },
+      required: ['productId', 'rating'],
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Rating berhasil dibuat' })
+  @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
   create(@Request() req, @Body() data: any) {
     return this.ratingsService.create(req.user.sub, data);
   }
 
   @Get('product/:productId')
+  @ApiOperation({ summary: 'Lihat semua rating untuk suatu produk (publik)' })
+  @ApiParam({ name: 'productId', description: 'ID produk', example: 1 })
+  @ApiResponse({ status: 200, description: 'Daftar rating berhasil diambil' })
+  @ApiResponse({ status: 404, description: 'Produk tidak ditemukan' })
   findByProduct(@Param('productId', ParseIntPipe) productId: number) {
     return this.ratingsService.findByProduct(productId);
   }

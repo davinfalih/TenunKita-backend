@@ -11,11 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateOrderStatusDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class UpdateOrderStatusDto {
     status;
 }
 exports.UpdateOrderStatusDto = UpdateOrderStatusDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'PROCESSING',
+        description: 'Status pesanan baru',
+        enum: ['PAID', 'PROCESSING', 'SHIPPED', 'COMPLETED'],
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsIn)(['PAID', 'PROCESSING', 'SHIPPED', 'COMPLETED']),

@@ -7,22 +7,22 @@ export declare class ProductsService {
     uploadImage(file: any): Promise<string>;
     create(dto: CreateProductDto, file?: any): Promise<{
         category: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
@@ -32,57 +32,57 @@ export declare class ProductsService {
             id: number;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     })[]>;
     findOne(id: string | number): Promise<{
         category: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
     update(id: string | number, dto: UpdateProductDto, file?: any): Promise<{
         category: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;

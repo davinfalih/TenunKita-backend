@@ -11,17 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifyPaymentDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class VerifyPaymentDto {
     status;
     adminNote;
 }
 exports.VerifyPaymentDto = VerifyPaymentDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'APPROVED',
+        description: 'Status verifikasi pembayaran',
+        enum: ['PENDING', 'APPROVED', 'REJECTED'],
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsIn)(['PENDING', 'APPROVED', 'REJECTED']),
     __metadata("design:type", Object)
 ], VerifyPaymentDto.prototype, "status", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'Pembayaran telah dikonfirmasi', description: 'Catatan admin' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

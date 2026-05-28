@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProductDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 class CreateProductDto {
     name;
@@ -21,16 +22,19 @@ class CreateProductDto {
 }
 exports.CreateProductDto = CreateProductDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Kain Tenun Ikat NTT', description: 'Nama produk' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'Nama produk tidak boleh kosong' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'Kain tenun tradisional dari Nusa Tenggara Timur dengan motif khas', description: 'Deskripsi produk' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "description", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 250000, description: 'Harga produk dalam rupiah', minimum: 0 }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(0),
@@ -38,6 +42,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateProductDto.prototype, "price", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 50, description: 'Jumlah stok tersedia', minimum: 0 }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.Min)(0),
@@ -45,6 +50,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateProductDto.prototype, "stock", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 1, description: 'ID kategori produk' }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
     (0, class_transformer_1.Type)(() => Number),

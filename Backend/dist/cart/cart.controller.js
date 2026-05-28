@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CartController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const cart_service_1 = require("./cart.service");
 const cart_dto_1 = require("./dto/cart.dto");
 const jwt_guard_1 = require("../auth/jwt.guard");
@@ -38,6 +39,10 @@ let CartController = class CartController {
 exports.CartController = CartController;
 __decorate([
     (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Tambah item ke keranjang belanja' }),
+    (0, swagger_1.ApiBody)({ type: cart_dto_1.AddToCartDto }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Item berhasil ditambahkan ke keranjang' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -46,6 +51,9 @@ __decorate([
 ], CartController.prototype, "addToCart", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Lihat isi keranjang belanja user yang sedang login' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Isi keranjang berhasil diambil' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -53,6 +61,11 @@ __decorate([
 ], CartController.prototype, "getCart", null);
 __decorate([
     (0, common_1.Patch)(':itemId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update jumlah item di keranjang' }),
+    (0, swagger_1.ApiParam)({ name: 'itemId', description: 'ID item keranjang', example: '1' }),
+    (0, swagger_1.ApiBody)({ type: cart_dto_1.UpdateCartDto }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Item keranjang berhasil diupdate' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Item tidak ditemukan di keranjang' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Param)('itemId')),
     __param(2, (0, common_1.Body)()),
@@ -62,6 +75,10 @@ __decorate([
 ], CartController.prototype, "updateItem", null);
 __decorate([
     (0, common_1.Delete)(':itemId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Hapus item dari keranjang belanja' }),
+    (0, swagger_1.ApiParam)({ name: 'itemId', description: 'ID item keranjang', example: '1' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Item berhasil dihapus dari keranjang' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Item tidak ditemukan di keranjang' }),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Param)('itemId')),
     __metadata("design:type", Function),
@@ -69,6 +86,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CartController.prototype, "removeItem", null);
 exports.CartController = CartController = __decorate([
+    (0, swagger_1.ApiTags)('carts'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('cart'),
     __metadata("design:paramtypes", [cart_service_1.CartService])

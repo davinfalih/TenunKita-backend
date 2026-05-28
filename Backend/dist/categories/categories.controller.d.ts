@@ -4,50 +4,50 @@ export declare class CategoriesController {
     private readonly categoriesService;
     constructor(categoriesService: CategoriesService);
     create(dto: CreateCategoryDto): import(".prisma/client").Prisma.Prisma__CategoryClient<{
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         _count: {
             products: number;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
     })[]>;
     findOne(id: string): Promise<{
         products: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
             price: number;
             stock: number;
-            imageUrl: string | null;
             categoryId: number;
+            imageUrl: string | null;
             averageRating: number;
             totalReviews: number;
         }[];
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
     }>;
     update(id: string, dto: Partial<CreateCategoryDto>): Promise<{
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
     }>;
     remove(id: string): Promise<{
         message: string;

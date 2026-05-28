@@ -6,22 +6,22 @@ export declare class ProductsController {
     constructor(productsService: ProductsService);
     create(dto: CreateProductDto, file: Express.Multer.File): Promise<{
         category: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
@@ -31,57 +31,57 @@ export declare class ProductsController {
             id: number;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     })[]>;
     findOne(id: string): Promise<{
         category: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;
     update(id: string, dto: UpdateProductDto, file: Express.Multer.File): Promise<{
         category: {
+            description: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
             id: number;
-            description: string | null;
         };
     } & {
+        description: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
         id: number;
-        description: string | null;
         price: number;
         stock: number;
-        imageUrl: string | null;
         categoryId: number;
+        imageUrl: string | null;
         averageRating: number;
         totalReviews: number;
     }>;

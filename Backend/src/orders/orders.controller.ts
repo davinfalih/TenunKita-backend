@@ -8,12 +8,22 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 
+@ApiTags('orders')
+@ApiBearerAuth()
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
@@ -21,6 +31,10 @@ export class OrdersController {
   // User: Checkout dari keranjang
   @UseGuards(JwtAuthGuard)
   @Post('checkout')
+  @ApiOperation({ summary: 'Checkout - buat pesanan dari keranjang belanja' })
+  @ApiResponse({ status: 201, description: 'Pesanan berhasil dibuat' })
+  @ApiResponse({ status: 400, description: 'Keranjang kosong atau stok habis' })
+  @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
   checkout(@Request() req: any) {
     return this.ordersService.checkout(req.user.sub);
   }
@@ -28,6 +42,9 @@ export class OrdersController {
   // User: Lihat pesanan saya
   @UseGuards(JwtAuthGuard)
   @Get('my-orders')
+  @ApiOperation({ summary: 'Lihat semua pesanan milik user yang sedang login' })
+  @ApiResponse({ status: 200, description: 'Daftar pesanan berhasil diambil' })
+  @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
   getMyOrders(@Request() req: any) {
     return this.ordersService.getMyOrders(req.user.sub);
   }
@@ -36,6 +53,9 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get()
+  @ApiOperation({ summary: '[ADMIN] Lihat semua pesanan' })
+  @ApiResponse({ status: 200, description: 'Daftar semua pesanan' })
+  @ApiResponse({ status: 403, description: 'Akses ditolak - bukan admin' })
   getAllOrders() {
     return this.ordersService.getAllOrders();
   }
@@ -44,6 +64,11 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Patch(':id/status')
+  @ApiOperation({ summary: '[ADMIN] Update status pesanan' })
+  @ApiParam({ name: 'id', description: 'ID pesanan', example: '1' })
+  @ApiBody({ type: UpdateOrderStatusDto })
+  @ApiResponse({ status: 200, description: 'Status pesanan berhasil diupdate' })
+  @ApiResponse({ status: 404, description: 'Pesanan tidak ditemukan' })
   updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
     return this.ordersService.updateStatus(id, dto);
   }
