@@ -26,8 +26,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.enableCors();
 
-  const port = process.env.PORT || 3000;
-  await app.listen(port, '[IP_ADDRESS]');
-  console.log(`Application is running on: http://localhost:${port}`);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
