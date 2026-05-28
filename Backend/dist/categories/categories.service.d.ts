@@ -30,8 +30,8 @@ export declare class CategoriesService {
             description: string | null;
             price: number;
             stock: number;
-            categoryId: number;
             imageUrl: string | null;
+            categoryId: number;
             averageRating: number;
             totalReviews: number;
         }[];
