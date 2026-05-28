@@ -22,7 +22,8 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true }));
-    await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+    const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+    await app.listen(port, '0.0.0.0');
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
