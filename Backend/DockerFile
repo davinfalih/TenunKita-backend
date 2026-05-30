@@ -3,12 +3,13 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
+COPY prisma ./prisma
 
 RUN npm install
 
 COPY . .
 
-RUN npm run build || (echo "BUILD FAILED" && cat /app/node_modules/.bin/nest && exit 1)
+RUN npm run build
 
 EXPOSE 3000
 
