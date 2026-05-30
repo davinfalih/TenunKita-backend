@@ -1,5 +1,7 @@
 FROM node:20-alpine
 
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -9,9 +11,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build 2>&1 || (echo "=== BUILD FAILED ===" && exit 1)
-
-RUN ls -la dist/ || (echo "=== dist/ EMPTY ===" && exit 1)
+RUN npm run build
 
 EXPOSE 3000
 
