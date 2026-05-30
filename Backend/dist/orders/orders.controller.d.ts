@@ -44,6 +44,54 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.OrderStatus;
         totalAmount: number;
     })[]>;
+    getOrderById(req: any, id: string): Promise<{
+        user: {
+            name: string;
+            email: string;
+        };
+        payment: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            userId: number;
+            amount: number;
+            paymentMethod: import(".prisma/client").$Enums.PaymentMethod;
+            paymentStatus: import(".prisma/client").$Enums.PaymentStatus;
+            paidAt: Date | null;
+            orderId: number;
+        } | null;
+        orderItems: ({
+            product: {
+                name: string;
+                price: number;
+                imageUrl: string | null;
+            };
+        } & {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            price: number;
+            productId: number;
+            quantity: number;
+            orderId: number;
+        })[];
+        paymentProofs: {
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            status: import(".prisma/client").$Enums.PaymentProofStatus;
+            orderId: number;
+            adminNote: string | null;
+            fileUrl: string;
+        }[];
+    } & {
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        userId: number;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        totalAmount: number;
+    }>;
     getAllOrders(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
             name: string;

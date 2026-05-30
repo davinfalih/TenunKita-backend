@@ -87,6 +87,28 @@ let OrdersService = class OrdersService {
             orderBy: { createdAt: 'desc' },
         });
     }
+    async getOrderById(userId, role, orderId) {
+        const orderIdNumber = Number(orderId);
+        const userIdNumber = Number(userId);
+        const order = await this.prisma.order.findUnique({
+            where: { id: orderIdNumber },
+            include: {
+                user: { select: { name: true, email: true } },
+                orderItems: {
+                    include: { product: { select: { name: true, imageUrl: true, price: true } } },
+                },
+                payment: true,
+                paymentProofs: true,
+            },
+        });
+        if (!order) {
+            throw new common_1.NotFoundException('Pesanan tidak ditemukan');
+        }
+        if (role !== 'ADMIN' && order.userId !== userIdNumber) {
+            throw new common_1.NotFoundException('Pesanan tidak ditemukan atau tidak ada akses');
+        }
+        return order;
+    }
     getAllOrders() {
         return this.prisma.order.findMany({
             include: {

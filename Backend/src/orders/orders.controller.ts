@@ -29,7 +29,8 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   // User: Checkout dari keranjang
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'BUYER')
   @Post('checkout')
   @ApiOperation({ summary: 'Checkout - buat pesanan dari keranjang belanja' })
   @ApiResponse({ status: 201, description: 'Pesanan berhasil dibuat' })
@@ -40,13 +41,26 @@ export class OrdersController {
   }
 
   // User: Lihat pesanan saya
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'BUYER')
   @Get('my-orders')
   @ApiOperation({ summary: 'Lihat semua pesanan milik user yang sedang login' })
   @ApiResponse({ status: 200, description: 'Daftar pesanan berhasil diambil' })
   @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
   getMyOrders(@Request() req: any) {
     return this.ordersService.getMyOrders(req.user.sub);
+  }
+
+  // User: Lihat pesanan berdasarkan ID
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'BUYER')
+  @Get(':id')
+  @ApiOperation({ summary: 'Lihat pesanan berdasarkan ID' })
+  @ApiParam({ name: 'id', description: 'ID pesanan', example: '1' })
+  @ApiResponse({ status: 200, description: 'Pesanan berhasil diambil' })
+  @ApiResponse({ status: 404, description: 'Pesanan tidak ditemukan' })
+  getOrderById(@Request() req: any, @Param('id') id: string) {
+    return this.ordersService.getOrderById(req.user.sub, req.user.role, id);
   }
 
   // Admin: Lihat semua pesanan

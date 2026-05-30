@@ -101,6 +101,35 @@ export class OrdersService {
     });
   }
 
+  // ─── LIHAT PESANAN BERDASARKAN ID ─────────────────────────────────────────
+  async getOrderById(userId: string | number, role: string, orderId: string | number) {
+    const orderIdNumber = Number(orderId);
+    const userIdNumber = Number(userId);
+
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderIdNumber },
+      include: {
+        user: { select: { name: true, email: true } },
+        orderItems: {
+          include: { product: { select: { name: true, imageUrl: true, price: true } } },
+        },
+        payment: true,
+        paymentProofs: true,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Pesanan tidak ditemukan');
+    }
+
+    // Jika bukan admin dan pesanan ini bukan milik user yang login
+    if (role !== 'ADMIN' && order.userId !== userIdNumber) {
+      throw new NotFoundException('Pesanan tidak ditemukan atau tidak ada akses');
+    }
+
+    return order;
+  }
+
   // ─── LIHAT SEMUA PESANAN (ADMIN) ──────────────────────────────────────────
   getAllOrders() {
     return this.prisma.order.findMany({

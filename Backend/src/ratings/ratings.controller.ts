@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Delete,
   Body,
   Param,
   UseGuards,
@@ -52,5 +54,44 @@ export class RatingsController {
   @ApiResponse({ status: 404, description: 'Produk tidak ditemukan' })
   findByProduct(@Param('productId', ParseIntPipe) productId: number) {
     return this.ratingsService.findByProduct(productId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update rating yang sudah dibuat' })
+  @ApiParam({ name: 'id', description: 'ID rating', example: 1 })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        score: { type: 'number', example: 4, minimum: 1, maximum: 5 },
+        comment: { type: 'string', example: 'Produk cukup bagus' },
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Rating berhasil diupdate' })
+  @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
+  @ApiResponse({ status: 403, description: 'Tidak ada izin untuk update' })
+  @ApiResponse({ status: 404, description: 'Rating tidak ditemukan' })
+  update(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: any,
+  ) {
+    return this.ratingsService.update(id, req.user.sub, req.user.role, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Hapus rating yang sudah dibuat' })
+  @ApiParam({ name: 'id', description: 'ID rating', example: 1 })
+  @ApiResponse({ status: 200, description: 'Rating berhasil dihapus' })
+  @ApiResponse({ status: 401, description: 'Tidak terautentikasi' })
+  @ApiResponse({ status: 403, description: 'Tidak ada izin untuk menghapus' })
+  @ApiResponse({ status: 404, description: 'Rating tidak ditemukan' })
+  remove(@Request() req, @Param('id', ParseIntPipe) id: number) {
+    return this.ratingsService.remove(id, req.user.sub, req.user.role);
   }
 }

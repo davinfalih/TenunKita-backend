@@ -31,6 +31,9 @@ let OrdersController = class OrdersController {
     getMyOrders(req) {
         return this.ordersService.getMyOrders(req.user.sub);
     }
+    getOrderById(req, id) {
+        return this.ordersService.getOrderById(req.user.sub, req.user.role, id);
+    }
     getAllOrders() {
         return this.ordersService.getAllOrders();
     }
@@ -40,7 +43,8 @@ let OrdersController = class OrdersController {
 };
 exports.OrdersController = OrdersController;
 __decorate([
-    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
     (0, common_1.Post)('checkout'),
     (0, swagger_1.ApiOperation)({ summary: 'Checkout - buat pesanan dari keranjang belanja' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Pesanan berhasil dibuat' }),
@@ -52,7 +56,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "checkout", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
     (0, common_1.Get)('my-orders'),
     (0, swagger_1.ApiOperation)({ summary: 'Lihat semua pesanan milik user yang sedang login' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Daftar pesanan berhasil diambil' }),
@@ -62,6 +67,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "getMyOrders", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
+    (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Lihat pesanan berdasarkan ID' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID pesanan', example: '1' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Pesanan berhasil diambil' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Pesanan tidak ditemukan' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], OrdersController.prototype, "getOrderById", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),

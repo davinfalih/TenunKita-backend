@@ -77,4 +77,70 @@ export class RatingsService {
       },
     });
   }
+
+  async update(id: number, userId: number, userRole: string, data: any) {
+    const rating = await this.prisma.rating.findUnique({ where: { id: Number(id) } });
+    if (!rating) throw new NotFoundException(`Rating with id ${id} not found`);
+
+    if (rating.userId !== Number(userId) && userRole !== 'ADMIN') {
+      throw new BadRequestException('You do not have permission to update this rating');
+    }
+
+    if (data.score != null && (data.score < 1 || data.score > 5)) {
+      throw new BadRequestException('score must be between 1 and 5');
+    }
+
+    const updatedRating = await this.prisma.rating.update({
+      where: { id: Number(id) },
+      data: {
+        score: data.score != null ? Number(data.score) : undefined,
+        comment: data.comment !== undefined ? data.comment : undefined,
+      },
+    });
+
+    // Recalculate average rating
+    const agg = await this.prisma.rating.aggregate({
+      where: { productId: rating.productId },
+      _avg: { score: true },
+      _count: { score: true },
+    });
+
+    await this.prisma.product.update({
+      where: { id: rating.productId },
+      data: {
+        averageRating: agg._avg.score || 0,
+        totalReviews: agg._count.score || 0,
+      },
+    });
+
+    return updatedRating;
+  }
+
+  async remove(id: number, userId: number, userRole: string) {
+    const rating = await this.prisma.rating.findUnique({ where: { id: Number(id) } });
+    if (!rating) throw new NotFoundException(`Rating with id ${id} not found`);
+
+    if (rating.userId !== Number(userId) && userRole !== 'ADMIN') {
+      throw new BadRequestException('You do not have permission to delete this rating');
+    }
+
+    await this.prisma.rating.delete({ where: { id: Number(id) } });
+
+    // Recalculate average rating
+    const agg = await this.prisma.rating.aggregate({
+      where: { productId: rating.productId },
+      _avg: { score: true },
+      _count: { score: true },
+    });
+
+    await this.prisma.product.update({
+      where: { id: rating.productId },
+      data: {
+        averageRating: agg._avg.score || 0,
+        totalReviews: agg._count.score || 0,
+      },
+    });
+
+    return { message: 'Rating berhasil dihapus' };
+  }
 }

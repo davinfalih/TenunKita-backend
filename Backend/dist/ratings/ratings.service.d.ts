@@ -26,4 +26,16 @@ export declare class RatingsService {
         score: number;
         comment: string | null;
     })[]>;
+    update(id: number, userId: number, userRole: string, data: any): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        productId: number;
+        userId: number;
+        score: number;
+        comment: string | null;
+    }>;
+    remove(id: number, userId: number, userRole: string): Promise<{
+        message: string;
+    }>;
 }

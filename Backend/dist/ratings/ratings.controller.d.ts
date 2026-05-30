@@ -26,4 +26,16 @@ export declare class RatingsController {
         score: number;
         comment: string | null;
     })[]>;
+    update(req: any, id: number, data: any): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        productId: number;
+        userId: number;
+        score: number;
+        comment: string | null;
+    }>;
+    remove(req: any, id: number): Promise<{
+        message: string;
+    }>;
 }

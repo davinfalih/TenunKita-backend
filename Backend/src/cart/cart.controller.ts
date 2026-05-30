@@ -3,10 +3,13 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody } 
 import { CartService } from './cart.service';
 import { AddToCartDto, UpdateCartDto } from './dto/cart.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @ApiTags('carts')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('ADMIN', 'BUYER')
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}

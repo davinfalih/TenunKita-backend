@@ -18,6 +18,8 @@ const swagger_1 = require("@nestjs/swagger");
 const cart_service_1 = require("./cart.service");
 const cart_dto_1 = require("./dto/cart.dto");
 const jwt_guard_1 = require("../auth/jwt.guard");
+const roles_guard_1 = require("../auth/roles.guard");
+const roles_decorator_1 = require("../auth/roles.decorator");
 let CartController = class CartController {
     cartService;
     constructor(cartService) {
@@ -88,7 +90,8 @@ __decorate([
 exports.CartController = CartController = __decorate([
     (0, swagger_1.ApiTags)('carts'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN', 'BUYER'),
     (0, common_1.Controller)('cart'),
     __metadata("design:paramtypes", [cart_service_1.CartService])
 ], CartController);

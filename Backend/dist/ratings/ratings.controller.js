@@ -28,6 +28,12 @@ let RatingsController = class RatingsController {
     findByProduct(productId) {
         return this.ratingsService.findByProduct(productId);
     }
+    update(req, id, data) {
+        return this.ratingsService.update(id, req.user.sub, req.user.role, data);
+    }
+    remove(req, id) {
+        return this.ratingsService.remove(id, req.user.sub, req.user.role);
+    }
 };
 exports.RatingsController = RatingsController;
 __decorate([
@@ -65,6 +71,48 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], RatingsController.prototype, "findByProduct", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Update rating yang sudah dibuat' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID rating', example: 1 }),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                score: { type: 'number', example: 4, minimum: 1, maximum: 5 },
+                comment: { type: 'string', example: 'Produk cukup bagus' },
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Rating berhasil diupdate' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'Tidak ada izin untuk update' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Rating tidak ditemukan' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number, Object]),
+    __metadata("design:returntype", void 0)
+], RatingsController.prototype, "update", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Hapus rating yang sudah dibuat' }),
+    (0, swagger_1.ApiParam)({ name: 'id', description: 'ID rating', example: 1 }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Rating berhasil dihapus' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Tidak terautentikasi' }),
+    (0, swagger_1.ApiResponse)({ status: 403, description: 'Tidak ada izin untuk menghapus' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Rating tidak ditemukan' }),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", void 0)
+], RatingsController.prototype, "remove", null);
 exports.RatingsController = RatingsController = __decorate([
     (0, swagger_1.ApiTags)('ratings'),
     (0, common_1.Controller)('ratings'),
