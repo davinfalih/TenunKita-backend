@@ -1,0 +1,707 @@
+{
+  "info": {
+    "_postman_id": "tenunkita-api-collection-v2",
+    "name": "TenunKita API",
+    "description": "Koleksi endpoint API untuk aplikasi e-commerce TenunKita. Mencakup Auth, Users, Categories, Products, Cart, Orders, Payment, Ratings, Contacts, dan Promos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "buyerToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT token untuk Buyer. Diisi otomatis setelah login."
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT token untuk Admin. Diisi otomatis setelah login."
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{buyerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "description": "Endpoint autentikasi: Register, Login",
+      "item": [
+        {
+          "name": "Register Buyer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/register-admin", "host": ["{{baseUrl}}"], "path": ["auth", "register-admin"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin TenunKita\",\n  \"email\": \"admin@tenunkita.com\",\n  \"password\": \"adminpassword\",\n  \"adminSecret\": \"AdminSecret123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Buyer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "  pm.collectionVariables.set('buyerToken', jsonData.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"budi@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "  pm.collectionVariables.set('adminToken', jsonData.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@tenunkita.com\",\n  \"password\": \"adminpassword\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Users",
+      "description": "Endpoint manajemen user: profil diri sendiri dan CRUD admin",
+      "item": [
+        {
+          "name": "Lihat Profil Saya",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/profile", "host": ["{{baseUrl}}"], "path": ["users", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profil Saya",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/profile", "host": ["{{baseUrl}}"], "path": ["users", "profile"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Budi Santoso Updated\",\n  \"address\": \"Jl. Merdeka No. 1, Jakarta\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat Semua User",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat User by ID",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/users/1", "host": ["{{baseUrl}}"], "path": ["users", "1"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Update User by ID",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/users/1", "host": ["{{baseUrl}}"], "path": ["users", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nama Diperbarui\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Hapus User by ID",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/users/1", "host": ["{{baseUrl}}"], "path": ["users", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏷️ Categories",
+      "description": "Endpoint kategori produk",
+      "item": [
+        {
+          "name": "[ADMIN] Tambah Kategori",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/categories", "host": ["{{baseUrl}}"], "path": ["categories"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kain Tenun\",\n  \"description\": \"Koleksi kain tenun tradisional Indonesia\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Lihat Semua Kategori (Publik)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/categories", "host": ["{{baseUrl}}"], "path": ["categories"] }
+          }
+        },
+        {
+          "name": "Lihat Kategori by ID (Publik)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/categories/1", "host": ["{{baseUrl}}"], "path": ["categories", "1"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Kategori",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/categories/1", "host": ["{{baseUrl}}"], "path": ["categories", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kain Tenun Ikat\",\n  \"description\": \"Kain tenun ikat tradisional Nusantara\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Hapus Kategori",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/categories/1", "host": ["{{baseUrl}}"], "path": ["categories", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "description": "Endpoint produk - CRUD (Admin) dan lihat produk (Publik)",
+      "item": [
+        {
+          "name": "[ADMIN] Tambah Produk (dengan gambar)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Kain Tenun Ikat NTT", "type": "text" },
+                { "key": "description", "value": "Kain tenun ikat asli dari Nusa Tenggara Timur", "type": "text" },
+                { "key": "price", "value": "250000", "type": "text" },
+                { "key": "stock", "value": "50", "type": "text" },
+                { "key": "categoryId", "value": "1", "type": "text" },
+                { "key": "image", "type": "file", "src": [] }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Lihat Semua Produk (Publik)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "categoryId", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cari Produk by Keyword",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?search=tenun",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [{ "key": "search", "value": "tenun" }]
+            }
+          }
+        },
+        {
+          "name": "Lihat Produk by ID (Publik)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Produk",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "price", "value": "300000", "type": "text" },
+                { "key": "stock", "value": "30", "type": "text" },
+                { "key": "image", "type": "file", "src": [], "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Hapus Produk",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 Cart",
+      "description": "Endpoint keranjang belanja user",
+      "item": [
+        {
+          "name": "Tambah Item ke Keranjang",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/cart", "host": ["{{baseUrl}}"], "path": ["cart"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"quantity\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Lihat Isi Keranjang",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/cart", "host": ["{{baseUrl}}"], "path": ["cart"] }
+          }
+        },
+        {
+          "name": "Update Jumlah Item Keranjang",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/cart/1", "host": ["{{baseUrl}}"], "path": ["cart", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Item dari Keranjang",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/cart/1", "host": ["{{baseUrl}}"], "path": ["cart", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Orders",
+      "description": "Endpoint pemesanan - checkout, lihat pesanan, update status",
+      "item": [
+        {
+          "name": "Checkout (Tanpa Promo)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/orders/checkout", "host": ["{{baseUrl}}"], "path": ["orders", "checkout"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          }
+        },
+        {
+          "name": "Checkout (Dengan Kode Promo)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/orders/checkout", "host": ["{{baseUrl}}"], "path": ["orders", "checkout"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"promoCode\": \"DISKON50\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Lihat Pesanan Saya",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/orders/my-orders", "host": ["{{baseUrl}}"], "path": ["orders", "my-orders"] }
+          }
+        },
+        {
+          "name": "Lihat Pesanan by ID",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/orders/1", "host": ["{{baseUrl}}"], "path": ["orders", "1"] }
+          }
+        },
+        {
+          "name": "Download Struk PDF",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/orders/1/receipt", "host": ["{{baseUrl}}"], "path": ["orders", "1", "receipt"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat Semua Pesanan",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/orders", "host": ["{{baseUrl}}"], "path": ["orders"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Status Pesanan",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/orders/1/status", "host": ["{{baseUrl}}"], "path": ["orders", "1", "status"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PROCESSING\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Pesanan",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/orders/1", "host": ["{{baseUrl}}"], "path": ["orders", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💳 Payment",
+      "description": "Endpoint pembayaran - upload bukti, verifikasi admin",
+      "item": [
+        {
+          "name": "Upload Bukti Pembayaran",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/payment/upload-proof/1", "host": ["{{baseUrl}}"], "path": ["payment", "upload-proof", "1"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Lihat Bukti Pembayaran",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/payment/proof/1", "host": ["{{baseUrl}}"], "path": ["payment", "proof", "1"] }
+          }
+        },
+        {
+          "name": "Lihat Tagihan/Bill",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/payment/bill/1", "host": ["{{baseUrl}}"], "path": ["payment", "bill", "1"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Verifikasi Pembayaran",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/payment/verify/1", "host": ["{{baseUrl}}"], "path": ["payment", "verify", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\",\n  \"adminNote\": \"Pembayaran telah dikonfirmasi.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Hapus Pembayaran",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/payment/1", "host": ["{{baseUrl}}"], "path": ["payment", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⭐ Ratings",
+      "description": "Endpoint ulasan/rating produk",
+      "item": [
+        {
+          "name": "Buat Rating",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/ratings", "host": ["{{baseUrl}}"], "path": ["ratings"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Produk sangat bagus dan berkualitas tinggi!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Lihat Rating by Produk (Publik)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/ratings/product/1", "host": ["{{baseUrl}}"], "path": ["ratings", "product", "1"] }
+          }
+        },
+        {
+          "name": "Update Rating",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/ratings/1", "host": ["{{baseUrl}}"], "path": ["ratings", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 4,\n  \"comment\": \"Produk cukup bagus, pengiriman cepat\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Rating",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/ratings/1", "host": ["{{baseUrl}}"], "path": ["ratings", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📩 Contacts",
+      "description": "Endpoint pesan kontak - kirim pesan publik dan manajemen admin",
+      "item": [
+        {
+          "name": "Kirim Pesan Kontak (Publik)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Siti Rahayu\",\n  \"email\": \"siti@example.com\",\n  \"phone\": \"081234567890\",\n  \"message\": \"Halo, saya ingin bertanya tentang produk kain tenun.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat Semua Pesan Kontak",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/contacts", "host": ["{{baseUrl}}"], "path": ["contacts"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat Pesan by ID",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/contacts/1", "host": ["{{baseUrl}}"], "path": ["contacts", "1"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Status Pesan Kontak",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/contacts/1", "host": ["{{baseUrl}}"], "path": ["contacts", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"READ\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Hapus Pesan Kontak",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/contacts/1", "host": ["{{baseUrl}}"], "path": ["contacts", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎟️ Promos",
+      "description": "Endpoint kode promo - CRUD Admin dan pengecekan Buyer. Tipe diskon: PERCENTAGE (persen) atau FIXED (nominal tetap).",
+      "item": [
+        {
+          "name": "[ADMIN] Buat Promo Persentase",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/promos", "host": ["{{baseUrl}}"], "path": ["promos"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DISKON50\",\n  \"description\": \"Diskon 50% maksimal Rp 20.000\",\n  \"type\": \"PERCENTAGE\",\n  \"value\": 50,\n  \"maxDiscount\": 20000,\n  \"minOrderAmount\": 30000,\n  \"startDate\": \"2026-06-01T00:00:00.000Z\",\n  \"endDate\": \"2026-12-31T23:59:59.000Z\",\n  \"usageLimit\": 100,\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Buat Promo Nominal Tetap (FIXED)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/promos", "host": ["{{baseUrl}}"], "path": ["promos"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"HEMAT15K\",\n  \"description\": \"Potongan Rp 15.000 untuk pembelian minimal Rp 100.000\",\n  \"type\": \"FIXED\",\n  \"value\": 15000,\n  \"minOrderAmount\": 100000,\n  \"startDate\": \"2026-06-01T00:00:00.000Z\",\n  \"endDate\": \"2026-12-31T23:59:59.000Z\",\n  \"usageLimit\": 50,\n  \"isActive\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat Semua Promo",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/promos", "host": ["{{baseUrl}}"], "path": ["promos"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Lihat Promo by ID",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/promos/1", "host": ["{{baseUrl}}"], "path": ["promos", "1"] }
+          }
+        },
+        {
+          "name": "[ADMIN] Update Promo",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/promos/1", "host": ["{{baseUrl}}"], "path": ["promos", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Nonaktifkan Promo",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/promos/1", "host": ["{{baseUrl}}"], "path": ["promos", "1"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "[ADMIN] Hapus Promo",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/promos/1", "host": ["{{baseUrl}}"], "path": ["promos", "1"] }
+          }
+        },
+        {
+          "name": "Cek Kode Promo (Buyer)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{buyerToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/promos/check", "host": ["{{baseUrl}}"], "path": ["promos", "check"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DISKON50\",\n  \"subtotal\": 100000\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
